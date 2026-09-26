@@ -1,0 +1,34 @@
+{
+	"folders": [
+		{
+			"path": "../app"
+		},
+		{
+			"path": "."
+		},
+		{
+			"path": "../data"
+		},
+		{
+			"path": "../docs"
+		},
+		{
+			"path": "../models"
+		},
+		{
+			"path": "../notebooks"
+		},
+		{
+			"path": "../sql"
+		},
+		{
+			"path": "../src"
+		},
+		{
+			"path": "../tests"
+		},
+		{
+			"path": "../venv"
+		}
+	]
+}
