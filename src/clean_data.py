@@ -4,13 +4,11 @@ from pathlib import Path
 RAW_DATA_PATH = Path("data/raw")
 PROCESSED_DATA_PATH = Path("data/processed")
 
-PROCESSED_DATA_PATH.mkdir(
-    parents=True,
-    exist_ok=True
-)
+PROCESSED_DATA_PATH.mkdir(parents=True, exist_ok=True)
 
 print("NEXUS Data Cleaning Started")
 print("-" * 40)
+
 
 def clean_dataset(filename):
     input_path = RAW_DATA_PATH / filename
@@ -18,26 +16,34 @@ def clean_dataset(filename):
 
     df = pd.read_csv(input_path)
 
-    # Remove duplicate rows
     df = df.drop_duplicates()
-
-    # Remove completely empty rows
     df = df.dropna(how="all")
 
-    # Remove extra spaces from text columns
     text_columns = df.select_dtypes(include="object").columns
 
     for column in text_columns:
         df[column] = df[column].str.strip()
 
+    date_columns = [
+        "date_of_birth",
+        "signup_date",
+        "order_date",
+        "payment_date",
+        "last_updated",
+        "shipped_date",
+        "expected_delivery",
+        "actual_delivery",
+        "return_date"
+    ]
+
+    for column in date_columns:
+        if column in df.columns:
+            df[column] = pd.to_datetime(df[column], errors="coerce")
+
     df.to_csv(output_path, index=False)
 
     print(f"{filename}: {len(df)} rows cleaned")
 
-
-print("Cleaning function ready.")
-
-# Datasets to clean
 
 datasets = [
     "customers.csv",
@@ -50,6 +56,7 @@ datasets = [
     "deliveries.csv",
     "returns.csv"
 ]
+
 
 for dataset in datasets:
     clean_dataset(dataset)
