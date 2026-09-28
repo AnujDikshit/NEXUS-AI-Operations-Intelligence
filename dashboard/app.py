@@ -620,7 +620,24 @@ if business_question:
     response.raise_for_status()
     result = response.json()
 
-    if result["intent"] == "TOP_REVENUE_WAREHOUSE":
+    if result["intent"] == "LATEST_REVENUE_RCA":
+        data = result["data"]
+
+        st.markdown("### Revenue Root Cause Analysis")
+        st.write(data["explanation"])
+
+        col1, col2, col3 = st.columns(3)
+
+        with col1:
+            st.metric("Revenue Deviation", f'{data["deviation_percent"]:+.2f}%')
+
+        with col2:
+            st.metric("Actual Revenue", f'₹{data["actual_revenue"]:,.2f}')
+
+        with col3:
+            st.metric("Baseline Revenue", f'₹{data["baseline_revenue"]:,.2f}')
+
+    elif result["intent"] == "TOP_REVENUE_WAREHOUSE":
         data = result["data"]
         st.write(f"{data['warehouse']} has the highest revenue, generating ₹{data['revenue']:,.2f}.")
 

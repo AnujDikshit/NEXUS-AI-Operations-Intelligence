@@ -194,3 +194,14 @@ def format_query_response(question):
         return f"{count:,} products currently require reorder."
 
     return "I could not identify that business question."
+
+
+def get_latest_revenue_root_cause():
+    from root_cause_service import get_revenue_root_causes
+
+    anomalies = get_revenue_root_causes()
+
+    if not anomalies:
+        return None
+
+    return max(anomalies, key=lambda item: item["issue_date"])
