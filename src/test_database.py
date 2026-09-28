@@ -1,15 +1,16 @@
 from database import get_connection
 
-connection = get_connection()
 
-cursor = connection.cursor()
+def test_database_connection():
+    connection = get_connection()
 
-cursor.execute("SELECT * FROM business_kpi_summary;")
+    assert connection is not None
 
-result = cursor.fetchone()
+    cursor = connection.cursor()
+    cursor.execute("SELECT 1;")
+    result = cursor.fetchone()
 
-print("NEXUS KPI Summary:")
-print(result)
+    assert result[0] == 1
 
-cursor.close()
-connection.close()
+    cursor.close()
+    connection.close()

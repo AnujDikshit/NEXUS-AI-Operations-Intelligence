@@ -1,13 +1,23 @@
 from analytics_service import get_revenue_by_category, get_revenue_by_warehouse
 
-print("Revenue by Category")
-print("-------------------")
 
-for category, revenue in get_revenue_by_category():
-    print(f"{category}: ₹{revenue:,.2f}")
+def test_revenue_by_category():
+    results = get_revenue_by_category()
 
-print("\nRevenue by Warehouse")
-print("--------------------")
+    assert results
+    assert len(results) > 0
 
-for warehouse, revenue in get_revenue_by_warehouse():
-    print(f"{warehouse}: ₹{revenue:,.2f}")
+    for category, revenue in results:
+        assert category
+        assert float(revenue) >= 0
+
+
+def test_revenue_by_warehouse():
+    results = get_revenue_by_warehouse()
+
+    assert results
+    assert len(results) > 0
+
+    for warehouse, revenue in results:
+        assert warehouse
+        assert float(revenue) >= 0
