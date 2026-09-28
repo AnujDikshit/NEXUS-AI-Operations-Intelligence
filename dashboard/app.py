@@ -7,6 +7,7 @@ from root_cause_service import get_revenue_root_causes, generate_rca_explanation
 import sys
 from pathlib import Path
 
+import requests
 import pandas as pd
 import streamlit as st
 
@@ -611,7 +612,13 @@ business_question = st.text_input(
 )
 
 if business_question:
-    result = execute_interpreted_query(business_question)
+    response = requests.post(
+        "http://127.0.0.1:8000/query",
+        json={"question": business_question},
+        timeout=10
+    )
+    response.raise_for_status()
+    result = response.json()
 
     if result["intent"] == "TOP_REVENUE_WAREHOUSE":
         data = result["data"]
