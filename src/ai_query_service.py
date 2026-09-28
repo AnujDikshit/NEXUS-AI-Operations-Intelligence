@@ -14,7 +14,7 @@ def interpret_question(question):
             "intent": "TOP_REVENUE_CATEGORY"
         }
 
-    if "segment" in question and any(word in question for word in ["revenue", "sales", "highest", "top", "best"]):
+    if any(word in question for word in ["segment", "customer segment", "customer group"]) and any(word in question for word in ["revenue", "sales", "highest", "top", "best", "most"]):
         return {
             "intent": "TOP_REVENUE_SEGMENT"
         }
