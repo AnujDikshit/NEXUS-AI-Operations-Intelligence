@@ -618,3 +618,42 @@ if business_question:
 
     else:
         st.info("I could not identify that business question.")
+st.subheader("Recommended Actions")
+
+from recommendation_service import get_inventory_recommendations
+
+recommendations = get_inventory_recommendations()
+
+if recommendations:
+    recommendation_df = pd.DataFrame(recommendations)
+
+    total_products = len(recommendations)
+    critical_count = (recommendation_df["priority"] == "Critical").sum()
+    high_count = (recommendation_df["priority"] == "High").sum()
+    total_reorder_units = recommendation_df["recommended_reorder_qty"].sum()
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    col1.metric("Products Requiring Action", f"{total_products:,}")
+    col2.metric("Critical", f"{critical_count:,}")
+    col3.metric("High Priority", f"{high_count:,}")
+    col4.metric("Recommended Reorder Units", f"{total_reorder_units:,.0f}")
+
+    st.dataframe(
+        recommendation_df[
+            [
+                "priority",
+                "product_id",
+                "product_name",
+                "category",
+                "warehouse",
+                "current_stock",
+                "reorder_level",
+                "recommended_reorder_qty",
+                "reason"
+            ]
+        ],
+        use_container_width=True
+    )
+else:
+    st.info("No inventory recommendations available.")
