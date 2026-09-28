@@ -1,3 +1,5 @@
+-- NEXUS Database Schema
+
 CREATE TABLE customers (
     customer_id BIGINT PRIMARY KEY,
     first_name VARCHAR(100),
@@ -11,6 +13,7 @@ CREATE TABLE customers (
     customer_segment VARCHAR(50)
 );
 
+
 CREATE TABLE products (
     product_id BIGINT PRIMARY KEY,
     product_name VARCHAR(200),
@@ -22,41 +25,6 @@ CREATE TABLE products (
     selling_price DECIMAL(12,2)
 );
 
-CREATE TABLE orders (
-    order_id BIGINT PRIMARY KEY,
-    customer_id BIGINT,
-    warehouse_id BIGINT,
-    order_date TIMESTAMP,
-    order_status VARCHAR(50),
-    total_amount DECIMAL(12,2),
-    discount_amount DECIMAL(12,2),
-    shipping_cost DECIMAL(12,2),
-
-    FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
-);
-
-CREATE TABLE order_items (
-    order_item_id BIGINT PRIMARY KEY,
-    order_id BIGINT,
-    product_id BIGINT,
-    quantity INT,
-    unit_price DECIMAL(12,2),
-    discount DECIMAL(12,2),
-
-    FOREIGN KEY (order_id) REFERENCES orders(order_id),
-    FOREIGN KEY (product_id) REFERENCES products(product_id)
-);
-
-CREATE TABLE payments (
-    payment_id BIGINT PRIMARY KEY,
-    order_id BIGINT,
-    payment_date TIMESTAMP,
-    payment_method VARCHAR(50),
-    payment_status VARCHAR(50),
-    amount DECIMAL(12,2),
-
-    FOREIGN KEY (order_id) REFERENCES orders(order_id)
-);
 
 CREATE TABLE warehouses (
     warehouse_id BIGINT PRIMARY KEY,
@@ -67,6 +35,54 @@ CREATE TABLE warehouses (
     operating_cost DECIMAL(12,2)
 );
 
+
+CREATE TABLE orders (
+    order_id BIGINT PRIMARY KEY,
+    customer_id BIGINT,
+    warehouse_id BIGINT,
+    order_date TIMESTAMP,
+    order_status VARCHAR(50),
+    total_amount DECIMAL(12,2),
+    discount_amount DECIMAL(12,2),
+    shipping_cost DECIMAL(12,2),
+
+    FOREIGN KEY (customer_id)
+        REFERENCES customers(customer_id),
+
+    FOREIGN KEY (warehouse_id)
+        REFERENCES warehouses(warehouse_id)
+);
+
+
+CREATE TABLE order_items (
+    order_item_id BIGINT PRIMARY KEY,
+    order_id BIGINT,
+    product_id BIGINT,
+    quantity INT,
+    unit_price DECIMAL(12,2),
+    discount DECIMAL(12,2),
+
+    FOREIGN KEY (order_id)
+        REFERENCES orders(order_id),
+
+    FOREIGN KEY (product_id)
+        REFERENCES products(product_id)
+);
+
+
+CREATE TABLE payments (
+    payment_id BIGINT PRIMARY KEY,
+    order_id BIGINT,
+    payment_date TIMESTAMP,
+    payment_method VARCHAR(50),
+    payment_status VARCHAR(50),
+    amount DECIMAL(12,2),
+
+    FOREIGN KEY (order_id)
+        REFERENCES orders(order_id)
+);
+
+
 CREATE TABLE inventory (
     inventory_id BIGINT PRIMARY KEY,
     product_id BIGINT,
@@ -75,9 +91,13 @@ CREATE TABLE inventory (
     reorder_level INT,
     last_updated TIMESTAMP,
 
-    FOREIGN KEY (product_id) REFERENCES products(product_id),
-    FOREIGN KEY (warehouse_id) REFERENCES warehouses(warehouse_id)
+    FOREIGN KEY (product_id)
+        REFERENCES products(product_id),
+
+    FOREIGN KEY (warehouse_id)
+        REFERENCES warehouses(warehouse_id)
 );
+
 
 CREATE TABLE deliveries (
     delivery_id BIGINT PRIMARY KEY,
@@ -89,7 +109,8 @@ CREATE TABLE deliveries (
     delivery_status VARCHAR(50),
     delivery_delay_days INT,
 
-    FOREIGN KEY (order_id) REFERENCES orders(order_id)
+    FOREIGN KEY (order_id)
+        REFERENCES orders(order_id)
 );
 
 
@@ -102,6 +123,9 @@ CREATE TABLE returns (
     return_quantity INT,
     refund_amount DECIMAL(12,2),
 
-    FOREIGN KEY (order_id) REFERENCES orders(order_id),
-    FOREIGN KEY (product_id) REFERENCES products(product_id)
+    FOREIGN KEY (order_id)
+        REFERENCES orders(order_id),
+
+    FOREIGN KEY (product_id)
+        REFERENCES products(product_id)
 );
