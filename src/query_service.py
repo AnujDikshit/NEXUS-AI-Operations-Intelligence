@@ -81,6 +81,25 @@ def get_top_revenue_segment():
     return result
 
 
+def get_total_revenue():
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    query = """
+        SELECT
+            ROUND(COALESCE(SUM(total_amount), 0)::numeric, 2) AS total_revenue
+        FROM orders
+        WHERE order_status <> 'Cancelled';
+    """
+
+    cursor.execute(query)
+    result = cursor.fetchone()
+
+    cursor.close()
+    connection.close()
+
+    return result
+
 def get_products_requiring_reorder():
     connection = get_connection()
     cursor = connection.cursor()

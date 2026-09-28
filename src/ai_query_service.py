@@ -1,6 +1,9 @@
 def interpret_question(question):
     question = question.lower().strip()
 
+    if any(word in question for word in ["total revenue", "overall revenue", "total sales", "overall sales"]):
+        return {"intent": "TOTAL_REVENUE"}
+
     if "warehouse" in question and any(word in question for word in ["revenue", "sales", "highest", "top", "best"]):
         return {
             "intent": "TOP_REVENUE_WAREHOUSE"
@@ -31,13 +34,18 @@ def execute_interpreted_query(question):
         get_top_revenue_warehouse,
         get_top_revenue_category,
         get_top_revenue_segment,
-        get_products_requiring_reorder
+        get_products_requiring_reorder,
+        get_total_revenue
     )
 
     interpretation = interpret_question(question)
     intent = interpretation["intent"]
 
-    if intent == "TOP_REVENUE_WAREHOUSE":
+    if intent == "TOTAL_REVENUE":
+        result = get_total_revenue()
+        data = {"total_revenue": float(result[0])}
+
+    elif intent == "TOP_REVENUE_WAREHOUSE":
         result = get_top_revenue_warehouse()
         data = {
             "warehouse": result[0],
