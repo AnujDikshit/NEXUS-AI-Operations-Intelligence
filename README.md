@@ -88,3 +88,9 @@ Interactive API documentation is available through FastAPI Swagger UI at `/docs`
 Current automated backend test suite: **4 passed, 0 failed**.
 
 Run tests with: `python -m pytest -v`
+
+## Project Demo
+
+### NEXUS Business Operations Dashboard
+
+![NEXUS Dashboard](docs/screenshots/nexus-dashboard.png)
