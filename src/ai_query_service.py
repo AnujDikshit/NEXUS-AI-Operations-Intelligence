@@ -95,8 +95,26 @@ def execute_interpreted_query(question):
 
     elif intent == "PRODUCTS_REQUIRING_REORDER":
         result = get_products_requiring_reorder()
+
+        from recommendation_service import get_reorder_recommendations
+
+        recommendations = get_reorder_recommendations()
+
         data = {
-            "products_requiring_reorder": result[0]
+            "products_requiring_reorder": result[0],
+            "recommendations": [
+                {
+                    "product_id": item[0],
+                    "product_name": item[1],
+                    "category": item[2],
+                    "warehouse": item[3],
+                    "current_stock": item[4],
+                    "reorder_level": item[5],
+                    "units_sold_30d": item[6],
+                    "recommended_reorder_qty": float(item[9])
+                }
+                for item in recommendations[:10]
+            ]
         }
 
     else:

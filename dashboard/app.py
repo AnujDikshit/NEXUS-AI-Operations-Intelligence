@@ -650,7 +650,32 @@ if business_question:
         st.write(f"{data['segment']} is the highest-revenue customer segment, generating ₹{data['revenue']:,.2f}.")
 
     elif result["intent"] == "PRODUCTS_REQUIRING_REORDER":
-        st.write(f"{result['data']['products_requiring_reorder']:,} products currently require reorder.")
+        data = result["data"]
+
+        st.write(
+            f"{data['products_requiring_reorder']:,} products currently require reorder."
+        )
+
+        recommendations = data.get("recommendations", [])
+
+        if recommendations:
+            recommendation_df = pd.DataFrame(recommendations)
+
+            st.dataframe(
+                recommendation_df[
+                    [
+                        "product_id",
+                        "product_name",
+                        "category",
+                        "warehouse",
+                        "current_stock",
+                        "units_sold_30d",
+                        "recommended_reorder_qty"
+                    ]
+                ],
+                use_container_width=True,
+                hide_index=True
+            )
 
     else:
         st.info("I could not identify that business question.")
