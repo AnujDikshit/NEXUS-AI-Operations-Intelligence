@@ -35,7 +35,19 @@ st.set_page_config(
 st.title("🚀 NEXUS — AI Operations Intelligence")
 st.caption("Business Operations Command Center")
 
-kpi = get_kpi_summary()
+import requests
+
+response = requests.get("http://127.0.0.1:8000/kpis", timeout=5)
+response.raise_for_status()
+kpi_data = response.json()
+
+kpi = (
+    kpi_data["total_revenue"],
+    kpi_data["total_orders"],
+    kpi_data["average_order_value"],
+    kpi_data["returned_orders"],
+    kpi_data["return_rate"]
+)
 
 total_revenue = kpi[0]
 total_orders = kpi[1]
