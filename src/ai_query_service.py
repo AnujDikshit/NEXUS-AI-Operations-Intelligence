@@ -28,6 +28,15 @@ def interpret_question(question):
             "intent": "TOP_REVENUE_SEGMENT"
         }
 
+    if any(phrase in question for phrase in [
+        "forecast",
+        "future demand",
+        "expected orders",
+        "next 7 days",
+        "next week"
+    ]):
+        return {"intent": "DEMAND_FORECAST"}
+
     if any(word in question for word in ["reorder", "restock", "stockout"]):
         return {
             "intent": "PRODUCTS_REQUIRING_REORDER"
@@ -54,6 +63,21 @@ def execute_interpreted_query(question):
     if intent == "TOTAL_REVENUE":
         result = get_total_revenue()
         data = {"total_revenue": float(result[0])}
+
+    elif intent == "DEMAND_FORECAST":
+        from ml_forecast_service import get_ml_demand_forecast
+
+        forecast = get_ml_demand_forecast()
+
+        data = {
+            "forecast": [
+                {
+                    "date": str(item["date"].date()),
+                    "predicted_orders": float(item["predicted_orders"])
+                }
+                for item in forecast
+            ]
+        }
 
     elif intent == "LATEST_REVENUE_RCA":
         result = get_latest_revenue_root_cause()

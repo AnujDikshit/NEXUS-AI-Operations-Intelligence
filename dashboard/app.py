@@ -649,6 +649,26 @@ if business_question:
         data = result["data"]
         st.write(f"{data['segment']} is the highest-revenue customer segment, generating ₹{data['revenue']:,.2f}.")
 
+    elif result["intent"] == "DEMAND_FORECAST":
+        data = result["data"]
+
+        st.markdown("### 7-Day Demand Forecast")
+
+        forecast_df = pd.DataFrame(data["forecast"])
+
+        forecast_df = forecast_df.rename(
+            columns={
+                "date": "Date",
+                "predicted_orders": "Predicted Orders"
+            }
+        )
+
+        st.dataframe(
+            forecast_df,
+            use_container_width=True,
+            hide_index=True
+        )
+
     elif result["intent"] == "PRODUCTS_REQUIRING_REORDER":
         data = result["data"]
 
