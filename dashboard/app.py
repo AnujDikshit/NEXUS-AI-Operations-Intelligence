@@ -669,6 +669,27 @@ if business_question:
             hide_index=True
         )
 
+    elif result["intent"] == "DELIVERY_RISK":
+        data = result["data"]
+
+        st.markdown("### Delivery Risk Monitoring")
+
+        col1, col2, col3 = st.columns(3)
+
+        with col1:
+            st.metric("Total Deliveries", f'{data["total_deliveries"]:,}')
+
+        with col2:
+            st.metric("High Risk", f'{data["high_risk"]:,}')
+
+        with col3:
+            st.metric("Medium Risk", f'{data["medium_risk"]:,}')
+
+        st.caption(
+            "Risk monitoring only. The current model has limited predictive signal "
+            "(ROC-AUC 0.506) and should not be interpreted as a reliable predictor."
+        )
+
     elif result["intent"] == "PRODUCTS_REQUIRING_REORDER":
         data = result["data"]
 

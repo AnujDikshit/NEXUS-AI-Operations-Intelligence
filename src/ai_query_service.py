@@ -37,6 +37,14 @@ def interpret_question(question):
     ]):
         return {"intent": "DEMAND_FORECAST"}
 
+    if any(word in question for word in [
+        "delivery risk",
+        "delivery delay",
+        "late delivery",
+        "shipping risk"
+    ]):
+        return {"intent": "DELIVERY_RISK"}
+
     if any(word in question for word in ["reorder", "restock", "stockout"]):
         return {
             "intent": "PRODUCTS_REQUIRING_REORDER"
@@ -77,6 +85,24 @@ def execute_interpreted_query(question):
                 }
                 for item in forecast
             ]
+        }
+
+    elif intent == "DELIVERY_RISK":
+        from delivery_risk_service import get_delivery_risk_predictions
+
+        global _delivery_risk_cache
+        if "_delivery_risk_cache" not in globals():
+            _delivery_risk_cache = get_delivery_risk_predictions()
+
+        risk_df = _delivery_risk_cache
+
+        risk_counts = risk_df["risk_level"].value_counts()
+
+        data = {
+            "total_deliveries": int(len(risk_df)),
+            "high_risk": int(risk_counts.get("High Risk", 0)),
+            "medium_risk": int(risk_counts.get("Medium Risk", 0)),
+            "low_risk": int(risk_counts.get("Low Risk", 0))
         }
 
     elif intent == "LATEST_REVENUE_RCA":
@@ -149,3 +175,4 @@ def execute_interpreted_query(question):
         "intent": intent,
         "data": data
     }
+

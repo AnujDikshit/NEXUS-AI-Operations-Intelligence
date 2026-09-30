@@ -9,6 +9,20 @@ app = FastAPI(
 )
 
 
+@app.on_event("startup")
+def warm_delivery_risk_cache():
+    import sys
+    sys.path.append("src")
+
+    from delivery_risk_service import get_delivery_risk_predictions
+    import ai_query_service
+
+    ai_query_service._delivery_risk_cache = get_delivery_risk_predictions()
+    print("Delivery risk cache ready.")
+
+
+
+
 @app.get("/")
 def root():
     return {
